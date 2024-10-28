@@ -57,7 +57,7 @@ void originalText(const char* cipher_text, const char* key, char* orig_text) {
 }
 
 int main() {
-    char str[] = "ABINAV";
+    char str[] = "LOKESH";
     char keyword[] = "HELLO";
     char key[100];
     char cipher_text[100];
