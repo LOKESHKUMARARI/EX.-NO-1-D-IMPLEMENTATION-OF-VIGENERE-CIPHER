@@ -24,58 +24,69 @@
 ~~~
 #include <stdio.h>
 #include <string.h>
+#include <ctype.h>
 
-void generateKey(const char* str, const char* key, char* newKey) {
-    int strLen = strlen(str);
-    int keyLen = strlen(key);
-    int i, j;
-
-    for(i = 0; i < strLen; i++) {
-        newKey[i] = key[i % keyLen];
+void generateKey(const char *plaintext, const char *keyword, char *key) {
+    int len = strlen(plaintext);
+    int keyword_len = strlen(keyword);
+    for (int i = 0; i < len; i++) {
+        key[i] = keyword[i % keyword_len];
     }
-    newKey[i] = '\0';  // Null-terminate the new key
+    key[len] = '\0';
 }
 
-void cipherText(const char* str, const char* key, char* cipher_text) {
-    int strLen = strlen(str);
-    for(int i = 0; i < strLen; i++) {
-        char x = (str[i] + key[i]) % 26;
-        x += 'A';
-        cipher_text[i] = x;
+void encryptVigenere(const char *plaintext, const char *key, char *ciphertext) {
+    int len = strlen(plaintext);
+    for (int i = 0; i < len; i++) {
+        ciphertext[i] = ((plaintext[i] - 'A') + (key[i] - 'A')) % 26 + 'A';
     }
-    cipher_text[strLen] = '\0';  // Null-terminate the ciphertext
+    ciphertext[len] = '\0';
 }
 
-void originalText(const char* cipher_text, const char* key, char* orig_text) {
-    int strLen = strlen(cipher_text);
-    for(int i = 0; i < strLen; i++) {
-        char x = (cipher_text[i] - key[i] + 26) % 26;
-        x += 'A';
-        orig_text[i] = x;
+void decryptVigenere(const char *ciphertext, const char *key, char *decryptedtext) {
+    int len = strlen(ciphertext);
+    for (int i = 0; i < len; i++) {
+        decryptedtext[i] = ((ciphertext[i] - 'A') - (key[i] - 'A') + 26) % 26 + 'A';
     }
-    orig_text[strLen] = '\0';  // Null-terminate the original text
+    decryptedtext[len] = '\0';
 }
 
 int main() {
-    char str[] = "LOKESH";
-    char keyword[] = "HELLO";
-    char key[100];
-    char cipher_text[100];
-    char orig_text[100];
+    char plaintext[128] = "LOKESH";
+    char keyword[128] = "KEY";
+    char key[128];
+    char ciphertext[128];
+    char decryptedtext[128];
 
-    generateKey(str, keyword, key);
-    cipherText(str, key, cipher_text);
-    originalText(cipher_text, key, orig_text);
+    // Ensure plaintext is in uppercase
+    for (int i = 0; plaintext[i]; i++) {
+        plaintext[i] = toupper(plaintext[i]);
+    }
 
-    printf("Ciphertext : %s\n", cipher_text);
-    printf("Original/Decrypted Text : %s\n", orig_text);
+    // Generate the repeating key to match the length of the plaintext
+    generateKey(plaintext, keyword, key);
+
+    printf("Plaintext: %s\n", plaintext);
+    printf("Keyword: %s\n", keyword);
+    printf("Generated Key: %s\n", key);
+
+    // Encrypt the plaintext
+    encryptVigenere(plaintext, key, ciphertext);
+    printf("Encrypted text: %s\n", ciphertext);
+
+    // Decrypt the ciphertext
+    decryptVigenere(ciphertext, key, decryptedtext);
+    printf("Decrypted text: %s\n", decryptedtext);
 
     return 0;
 }
+
 ~~~
 
 ## OUTPUT:
-![Screenshot 2024-10-16 150159](https://github.com/user-attachments/assets/ec3520ee-5685-42f2-9013-8aafa44c748d)
+
+![image](https://github.com/user-attachments/assets/5bafef3e-0d5c-4bf0-8cd9-d6ebee1a94d3)
+
 
 
 ## RESULT:
